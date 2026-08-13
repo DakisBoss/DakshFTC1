@@ -1,44 +1,35 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
-@Disabled
 public class TestBench1 {
-    private DcMotor motor;
-    private double ticksPerRev;
-    private DigitalChannel touchSensor;
+    public DcMotor motor;
+    public Servo clawServo;
+    public double ticksPerRev;
 
+    public int ticks;
 
-    public void init(HardwareMap hwMap){
-        //DC Motor
+    public void init(HardwareMap hwMap) {
+        // Arm Motor
         motor = hwMap.get(DcMotor.class, "motor");
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor.setDirection(DcMotor.Direction.REVERSE);
 
         ticksPerRev = motor.getMotorType().getTicksPerRev();
+        ticks = motor.getCurrentPosition();
 
-        // Touch Sensor
-        touchSensor = hwMap.get(DigitalChannel.class, "touch_sensor");
-        touchSensor.setMode(DigitalChannel.Mode.INPUT);
-
+        // Claw Servo
+        clawServo = hwMap.get(Servo.class, "claw_servo");
     }
 
-    public boolean isTouchSensorPressed(){
-        return !touchSensor.getState();
+    public void setClawPosition(double position) {
+        clawServo.setPosition(position);
     }
 
-    public boolean isTouchSensorReleased(){
-        return touchSensor.getState();
-    }
-
-    public void setMotorSpeed(double speed){
-        // gets values form -1.0 to 1.0
+    public void setMotorSpeed(double speed) {
         motor.setPower(speed);
     }
 
@@ -46,8 +37,7 @@ public class TestBench1 {
         return motor.getCurrentPosition() / ticksPerRev;
     }
 
-    public void setMotorZeroBehavior(DcMotor.ZeroPowerBehavior zeroBehavior) {
-            motor.setZeroPowerBehavior(zeroBehavior);
-        }
-
+    public void setZeroBehavior(DcMotor.ZeroPowerBehavior zeroBehavior) {
+        motor.setZeroPowerBehavior(zeroBehavior);
+    }
 }
