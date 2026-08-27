@@ -4,28 +4,35 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.mechanisms.TestBench1;
-
-@TeleOp
+@TeleOp(name = "FindArmTicks", group = "Tools")
 public class FindArmTicks extends LinearOpMode {
-
-    TestBench1 bench = new TestBench1();
 
     @Override
     public void runOpMode() {
-        bench.init(hardwareMap);
+        DcMotor armMotor = hardwareMap.get(DcMotor.class, "armMotor");
 
-        bench.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        bench.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        // Reset encoder so 0 starts at current position
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Instructions", "Use triggers to move arm and read encoder ticks");
+        telemetry.update();
 
         waitForStart();
 
         while (opModeIsActive()) {
-            bench.setMotorSpeed(-gamepad1.right_stick_y * 0.5);
+            // Manual arm control using triggers
+            double power = gamepad1.right_trigger - gamepad1.left_trigger;
+            armMotor.setPower(power * 0.5); // 50% max speed for calibration safety
 
-            telemetry.addData("Current Ticks", bench.motor.getCurrentPosition());
-            telemetry.addData("Revolutions", bench.getMotorRevs());
+            // Display current position to write down
+            telemetry.addData("Arm Position (Ticks)", armMotor.getCurrentPosition());
+            telemetry.addData("Motor Power", power * 0.5);
             telemetry.update();
         }
+
+        armMotor.setPower(0.0);
     }
 }
