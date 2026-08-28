@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Claw;
 @TeleOp(name = "MainTeleOp", group = "TeleOp")
 public class MainTeleOp extends LinearOpMode {
 
-    // Create instances of your helper classes
+    // Create instances of helper classes
     Arm arm = new Arm();
     Claw claw = new Claw();
 
